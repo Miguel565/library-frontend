@@ -1,18 +1,43 @@
-import { useQuery } from '@apollo/client'
-import { ALL_AUTHORS } from '../queries'
+import { useState, useEffect } from 'react'
+import { useQuery, useMutation } from '@apollo/client'
+import { ALL_AUTHORS, EDIT_BORN } from '../queries'
 
 const Authors = (props) => {
+
+  const [authorName, setAuthorName] = useState('')
+  const [newBorn, setNewBorn] = useState(0)
+
   if (!props.show) {
     return null
   }
 
-  const result = useQuery(ALL_AUTHORS, { pollInterval: 2000 })
+  const { loading, error, data } = useQuery(ALL_AUTHORS, { pollInterval: 2000 })
 
-  if (result.loading)  {
+  const [editBorn, result] = useMutation(EDIT_BORN)
+
+  if (loading)  {
     return <div>loading...</div>
   }
+  if (error)  {
+    return <div><p>Error! {error}</p></div>
+  }
 
-  const authors = result.data.allAuthors
+  const authors = data.allAuthors
+
+  const handleBorn = async (event) => {
+    event.preventDefault()
+
+    editBorn({ variables: { authorName, newBorn } })
+
+    setAuthorName('')
+    setNewBorn(0)
+  }
+
+  useEffect(() => {
+    if (result.data && !result.data.editBorn) {
+      console.log('author not found!!')
+    }
+  }, [result.data]) // eslint-disable-line
 
   return (
     <div>
@@ -33,6 +58,28 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
+      <br />
+      <form onSubmit={handleBorn}>
+        <div>
+          <label>
+            Name:
+            <input type="text"
+              value={authorName}
+              onChange={({ target }) => setAuthorName(target.value)}
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Born:
+            <input type="num"
+              value={newBorn}
+              onChange={({ target }) => setNewBorn(target.value)}
+            />
+          </label>
+        </div>
+        <button>update author</button>
+      </form>
     </div>
   )
 }
