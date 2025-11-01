@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import { ALL_BOOKS } from '../queries'
 
 const Books = (props) => {
@@ -6,10 +6,14 @@ const Books = (props) => {
     return null
   }
 
-  const result = useQuery(ALL_BOOKS, { pollInterval: 2000 })
+  const result = useQuery(ALL_BOOKS, { pollInterval: 30000 })
 
   if (result.loading)  {
     return <div>loading...</div>
+  }
+
+  if (result.error)  {
+    return <div><p>Error! {error.message}</p></div>
   }
 
   const books = result.data.allBooks

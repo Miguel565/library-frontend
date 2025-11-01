@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useQuery, useMutation } from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client/react'
 import { ALL_AUTHORS, EDIT_BORN } from '../queries'
 
 const Authors = (props) => {
@@ -19,7 +19,7 @@ const Authors = (props) => {
     return <div>loading...</div>
   }
   if (error)  {
-    return <div><p>Error! {error}</p></div>
+    return <div><p>Error! {error.message}</p></div>
   }
 
   const authors = data.allAuthors
