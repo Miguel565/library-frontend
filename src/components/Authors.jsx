@@ -11,14 +11,20 @@ const Authors = (props) => {
 
   const [editBorn, result] = useMutation(EDIT_BORN)
 
+  useEffect(() => {
+    if (result.data && !result.data.editBorn) {
+      console.log('author not found!!')
+    }
+  }, [result.data]) // eslint-disable-line
+
   if (!props.show) {
     return null
   }
 
-  if (loading)  {
+  if (loading) {
     return <div>loading...</div>
   }
-  if (error)  {
+  if (error) {
     return <div><p>Error! {error.message}</p></div>
   }
 
@@ -34,16 +40,6 @@ const Authors = (props) => {
     setAuthorName('')
     setNewBorn(0)
   }
-
-
-  /*
-  useEffect(() => {
-    if (result.data && !result.data.editBorn) {
-      console.log('author not found!!')
-    }
-  }, [result.data]) // eslint-disable-line
-
- */
 
   return (
     <div>
