@@ -29,7 +29,7 @@ const App = () => {
         <Books show={page === "books"} />
         <LoginForm setToken={setToken} show={page === "login"} />
       </div>
-    )
+    );
   }
 
   return (
