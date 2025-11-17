@@ -11,7 +11,7 @@ const NewBook = (props) => {
 
   const [createBook] = useMutation(CREATE_BOOK, {
     refetchQueries: [ { query: ALL_AUTHORS }, { query: ALL_BOOKS } ]
-  })
+  }) // 8.22: Update cache
 
   if (!props.show) {
     return null
