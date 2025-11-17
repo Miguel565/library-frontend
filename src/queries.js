@@ -56,3 +56,22 @@ mutation login($username: String!, $password: String!) {
     }
 }
 `
+
+export const GET_USER = gql`
+query {
+    me {
+        username
+        favoriteGenre
+    }
+}
+`
+
+export const GET_BOOKS_BY_GENRE = gql`
+query allBooks($genre: String!) {
+    allBooks(genre: $genre) {
+        id
+        title
+        author { name, born }
+    }
+}
+`

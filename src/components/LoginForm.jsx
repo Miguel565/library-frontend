@@ -2,27 +2,24 @@ import { useEffect, useState } from 'react'
 import { useMutation } from '@apollo/client/react'
 import { LOGIN } from '../queries'
 
-const LoginForm = ({ setToken, show }) => {
+// eslint-disable-next-line react/prop-types
+const LoginForm = ({ setToken }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
   const [login, result] = useMutation(LOGIN, {
-    onError: (error) => {
-      setError(error.graphQLErrors[0].message)
-    }
+      onError: (error) => {
+        console.error('Login: ', error.graphQLErrors.message)
+      }
   })
 
   useEffect(() => {
     if (result.data) {
       const token = result.data.login.value
       setToken(token)
-      localStorage.setItem('library-user-token', token)
+      window.localStorage.setItem('library-user-token', JSON.stringify(token))
     }
   }, [result.data]) // eslint-disable-line
-
-  if (!show) {
-    return null
-  }
 
   const submit = async (event) => {
     event.preventDefault()

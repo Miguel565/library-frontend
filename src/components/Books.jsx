@@ -62,6 +62,8 @@ const Books = (props) => {
 
   const books = data.allBooks
 
+  console.log('Books:', books)
+
   const allGenres = books.flatMap(b => b.genres)
 
   const uniqueGenres = Array.from(new Set(allGenres))

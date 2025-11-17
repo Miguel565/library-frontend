@@ -7,7 +7,7 @@ import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
 
 const httpLink = new HttpLink({
-  uir: 'http://localhost:4000',
+  uri: 'http://localhost:4000',
 })
 
 const authLink = setContext((_, { headers }) => {
@@ -16,8 +16,7 @@ const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      
-      authorization: token ? `Bearer ${token}` : null
+      authorization: token ? `Bearer ${token}` : ""
     }
   }
 })
