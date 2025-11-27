@@ -1,11 +1,14 @@
-import { useQuery } from '@apollo/client/react'
-import { ALL_BOOKS } from '../queries'
+/* eslint-disable react/prop-types */
+import { useQuery, useSubscription } from '@apollo/client/react'
+import { ALL_BOOKS, BOOK_ADDED } from '../queries'
 import { useState } from 'react'
 
+// eslint-disable-next-line react/prop-types
 const Filter = ({ genres, setFilter }) => {
   return (
     <div>
       {
+        // eslint-disable-next-line react/prop-types
         genres.map(g => (
           <button key={g} onClick={() => setFilter(g)}>{g}</button>
         ))
@@ -14,6 +17,7 @@ const Filter = ({ genres, setFilter }) => {
   )
 }
 
+// eslint-disable-next-line react/prop-types
 const Book = ({ books, filter }) => {
   return (
     <div>
@@ -42,11 +46,25 @@ const Book = ({ books, filter }) => {
 
 const Books = (props) => {
 
-  const { loading, data, error } = useQuery(ALL_BOOKS, {
+  const { loading, data, error, client } = useQuery(ALL_BOOKS, {
     pollInterval: 30000
   })
 
   const [filter, setFilter] = useState("")
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data: subscriptionData }) => {
+      const newBook = subscriptionData.data.bookAdded
+      client.cache.updateQuery({ query: ALL_BOOKS}, (olData) => {
+        if (!olData) return { allBooks: [newBook] }
+        if ( olData.allBooks.some(b => b.id === newBook.id)) return olData
+        return {
+          allBooks: [...olData.allBooks, newBook]
+        }
+      })
+      window.alert(`Nuevo libro agregado: "${newBook.title}"`)
+    }
+  })
 
   if (!props.show) {
     return null

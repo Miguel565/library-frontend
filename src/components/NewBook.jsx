@@ -1,8 +1,9 @@
-import { useState } from 'react'
-import { useMutation } from '@apollo/client/react'
-import { ALL_AUTHORS, ALL_BOOKS, CREATE_BOOK } from '../queries'
+/* eslint-disable react/prop-types */
+import { useState, useEffect } from 'react'
+import { useMutation, useSubscription } from '@apollo/client/react'
+import { ALL_AUTHORS, ALL_BOOKS, CREATE_BOOK, BOOK_ADDED } from '../queries'
 
-const NewBook = (props) => {
+const NewBook = ({ show }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [published, setPublished] = useState('')
@@ -11,9 +12,18 @@ const NewBook = (props) => {
 
   const [createBook] = useMutation(CREATE_BOOK, {
     refetchQueries: [ { query: ALL_AUTHORS }, { query: ALL_BOOKS } ]
-  }) // 8.22: Update cache
+  })
 
-  if (!props.show) {
+  const { data: subscriptionData } = useSubscription(BOOK_ADDED)
+
+  useEffect(() => {
+    if (subscriptionData && subscriptionData.bookAdded) {
+      const book = subscriptionData.bookAdded
+      window.alert(`Nuevo libro agregado: "${book.title}"`)
+    }
+  }, [subscriptionData])
+
+  if (!show) {
     return null
   }
 
